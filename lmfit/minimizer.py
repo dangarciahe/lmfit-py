@@ -2072,7 +2072,7 @@ class Minimizer:
         except AbortFitException:
             pass
 
-        if not result.aborted:
+        if ret:
             result.ampgo_x0 = ret[0]
             result.ampgo_fval = ret[1]
             result.ampgo_eval = ret[2]
@@ -2081,12 +2081,18 @@ class Minimizer:
 
             for i, par in enumerate(result.var_names):
                 result.params[par].value = float(result.ampgo_x0[i])
-
             result.residual = self.__residual(result.ampgo_x0)
-            result.nfev -= 1
+
+            if result.aborted:
+                result.nfev -= 2
+
+            elif not result.aborted:
+                result.nfev -= 1     
+
         elif result.nfev > self.max_nfev-5:
             result.nfev -= 2
-            _best = result.last_internal_values
+            _previous = result.last_internal_values
+            _best = np.array([param.value for param in result.params.values()])
             result.residual = self.__residual(_best, False)
 
         result._calculate_statistics()
