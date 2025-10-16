@@ -2072,7 +2072,7 @@ class Minimizer:
         except AbortFitException:
             pass
 
-        if ret:
+        if 'ret' in locals():
             result.ampgo_x0 = ret[0]
             result.ampgo_fval = ret[1]
             result.ampgo_eval = ret[2]
@@ -2090,12 +2090,13 @@ class Minimizer:
                 result.nfev -= 2
                 print("result aborted")
 
+            result.residual = self.__residual(result.ampgo_x0)
+
         elif result.nfev > self.max_nfev-5:
             result.nfev -= 2
             _best = result.last_internal_values
             result.residual = self.__residual(_best, False)
-            
-        result.residual = self.__residual(result.ampgo_x0)
+
         result._calculate_statistics()
 
         # calculate the cov_x and estimate uncertainties/correlations
