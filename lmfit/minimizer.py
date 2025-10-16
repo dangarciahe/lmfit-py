@@ -2072,23 +2072,29 @@ class Minimizer:
         except AbortFitException:
             pass
 
-        result.ampgo_x0 = ret[0]
-        result.ampgo_fval = ret[1]
-        result.ampgo_eval = ret[2]
-        result.ampgo_msg = ret[3]
-        result.ampgo_tunnel = ret[4]
+        if ret:
+            result.ampgo_x0 = ret[0]
+            result.ampgo_fval = ret[1]
+            result.ampgo_eval = ret[2]
+            result.ampgo_msg = ret[3]
+            result.ampgo_tunnel = ret[4]
 
-        for i, par in enumerate(result.var_names):
-            result.params[par].value = float(result.ampgo_x0[i])
+            for i, par in enumerate(result.var_names):
+                result.params[par].value = float(result.ampgo_x0[i])
 
-        if not result.aborted:
-            print("result not aborted")
-            result.nfev -= 1
+            if not result.aborted:
+                print("result not aborted")
+                result.nfev -= 1
 
-        elif result.aborted:
+            elif result.aborted:
+                result.nfev -= 2
+                print("result aborted")
+
+        elif result.nfev > self.max_nfev-5:
             result.nfev -= 2
-            print("result aborted")
-
+            _best = result.last_internal_values
+            result.residual = self.__residual(_best, False)
+            
         result.residual = self.__residual(result.ampgo_x0)
         result._calculate_statistics()
 
