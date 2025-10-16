@@ -111,3 +111,21 @@ def test_ampgo_tunnel_more_than_three_arguments():
     args = [func, 0.1, np.array([1, 2]), 5.0]
     out = tunnel(np.array([10, 5]), *args)
     assert_allclose(out, 185.386275588)
+
+
+def test_ampgo_return_best_found_result():
+    """Test to ensure AMPGO returns best found result, not last one"""
+    def func(x):
+        return x**2
+    fit_params = lmfit.Parameters()
+    fit_params.add('x', value=-2, min=-10, max=10, vary=True)
+    result = lmfit.minimize(func, fit_params, method="ampgo", max_nfev=100)
+    best_error = result.chisqr ** 0.5
+
+    last_params = result.params.copy()
+    for name, val in zip(result.var_names, result.last_internal_values):
+        last_params[name].set(value=val)
+    last_error = func(last_params)
+
+    rounding_error_tolerance = 1e-6
+    assert best_error <= (last_error + rounding_error_tolerance)
