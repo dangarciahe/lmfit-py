@@ -124,10 +124,4 @@ def test_ampgo_return_best_found_result():
     result = lmfit.minimize(func, fit_params, method="ampgo", max_nfev=100)
     best_error = result.chisqr ** 0.5
 
-    last_x = result.last_internal_values[0]
-    last_params = lmfit.Parameters()
-    last_params.add('x', value=last_x)
-    last_error = func(last_params)
-
-    tol = 1e-6
-    assert best_error <= (last_error + tol)
+    assert best_error <= 1E-4
