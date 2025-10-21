@@ -2083,12 +2083,10 @@ class Minimizer:
                 result.params[par].value = float(result.ampgo_x0[i])
 
             if not result.aborted:
-                print("result not aborted")
                 result.nfev -= 1
 
             elif result.aborted:
                 result.nfev -= 2
-                print("result aborted")
 
             result.residual = self.__residual(result.ampgo_x0)
 
