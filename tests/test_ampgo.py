@@ -117,8 +117,10 @@ def test_ampgo_return_best_found_result():
     """Test to ensure AMPGO returns best found result, not last one, up to a tolerance"""
     def func(x):
         return x['x']**2
+
+    np.random.seed(0)
     fit_params = lmfit.Parameters()
-    fit_params.add('x', value=-2, min=-10, max=10, vary=True, seed=0)
+    fit_params.add('x', value=-2, min=-10, max=10, vary=True)
     result = lmfit.minimize(func, fit_params, method="ampgo", max_nfev=100)
     best_error = result.chisqr ** 0.5
 
