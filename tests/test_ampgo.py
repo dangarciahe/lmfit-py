@@ -114,7 +114,7 @@ def test_ampgo_tunnel_more_than_three_arguments():
 
 
 def test_ampgo_return_best_found_result():
-    """Test to ensure AMPGO returns best found result, not last one, up to a tolerance"""
+    """Test to ensure AMPGO returns best found result, for a fixed example"""
     def func(x):
         return x['x']**2
 
